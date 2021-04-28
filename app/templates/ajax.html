@@ -1,0 +1,120 @@
+<script>
+console.log("Starting");
+
+// Inserting Data
+$("#save-btn").click(function() {
+    console.log('save button clicked')
+    output = '';
+    let linkid = $('#linkid').val();
+    let inp_url = $('#url').val();
+    let inp_short_url = $('#short_url').val();
+    let csr = $("input[name=csrfmiddlewaretoken").val();
+    if (inp_short_url == "") {
+        console.log("null")
+    }
+    if (inp_url == "") {
+        console.log('enter a url ... ')
+    } else {
+        // console.log(url,short_url);
+        mydata = { sid:linkid, url: inp_url, short_url: inp_short_url, csrfmiddlewaretoken: csr };
+        // console.log(mydata)
+        $.ajax({
+            url: "{% url 'save' %}",
+            method: 'POST',
+            data: mydata,
+            dataType: "json",
+            success: function(data) {
+                customers = data.customer_values;
+                if (data.status == 'save') {
+                    // console.log(customers)
+                    console.log('data ',data)
+
+                    // const xhr = new XMLHttpRequest();
+                    // xhr.open('GET',data.customer_values[0].url);
+                    // xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    // xhr.send();
+                    // var res=xhr.responseText;
+                    // var title = $(res).filter('title').text();
+                    // console.log(title)
+
+
+                    for (i = 0; i < customers.length; i++ ) {
+                      // console.log(customers[i])
+                        output += "<tr><td>"
+                         + customers[i].id + 
+                         "</td><td>" + 
+                         customers[i].url + 
+                         "</td><td>" + 
+                         customers[i].short_url + 
+                         "</td><td> <input type='button' name='Edit' data-sid="+customers[i].id+" value='Edit' class='btn btn-sm btn-outline-dark btn-edit' id='btn-edit'> </td>"+
+                        "<td> <input type='button' name='Delete' data-sid="+customers[i].id+" value='Delete' class='btn btn-sm btn-danger btn-delete' id='btn-delete'> </td></tr>"
+                    }
+                    $('#tbody').html(output);
+                    $('#linkid').val("")
+                    $('form')[0].reset();
+
+                }
+                if (data.status == 0) {
+                    console.log('form not submmitted ');
+                    $('#linkid').val("")
+                    $('form')[0].reset();
+                }
+            }
+        })
+
+    }
+})
+
+// Deleting Data
+$(".btn-delete").click(function() {
+    console.log('clicked on Delete');
+    let id = $(this).attr("data-sid")
+    let csr = $("input[name=csrfmiddlewaretoken]").val();
+    console.log(id);
+    mydata = { sid: id, csrfmiddlewaretoken: csr }
+    mythis=this;
+    $.ajax({
+        url: "{% url 'delete' %}",
+        method: 'POST',
+        data: mydata,
+        success: function(data) {
+            if (data.status == 1) {
+                // $(`#exampleModal${data.id}`).modal('hide');
+                $(mythis).closest("tr").fadeOut();
+
+            } else if (data.status == 0) {
+                console.log('link already deleted or an error occured')
+            }
+        }
+    })
+});
+
+// Editing Data
+$(".btn-edit").click(function() {
+    console.log('clicked on Edit');
+    let id = $(this).attr("data-sid")
+    let csr = $("input[name=csrfmiddlewaretoken]").val();
+    console.log(id);
+    mydata = { sid: id, csrfmiddlewaretoken: csr }
+    $.ajax({
+        url: "{% url 'edit' %}",
+        method: 'POST',
+        data: mydata,
+        dataType: "json",
+        success: function(data) {
+            console.log(data)
+            $('#linkid').val(data.id)
+            $('#url').val(data.url);
+            $('#short_url').val(data.short_url);
+            // const xhr = new XMLHttpRequest();
+            // xhr.open('GET', data.url);
+            // xhr.send();
+            // var res = xhr.responseText;
+            // var title = $(res).filter('title').text();
+            // console.log(title)
+
+        }
+    })
+});
+</script>
