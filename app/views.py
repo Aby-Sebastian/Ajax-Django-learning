@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
-from . models import Customer
+from . models import Customer, Ip_address, Link_only_ip_address
 from .forms import CreateCustomLinkForm
 from django.http import JsonResponse
 from django.utils import timezone
@@ -10,12 +10,24 @@ import requests
 from bs4 import BeautifulSoup
 
 
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 	
 def links(request):
-    links = Customer.objects.all().order_by('-id')
-    form = CreateCustomLinkForm()
-    context = {'links':links, 'form':form}
-    return render(request, 'dashboard/links.html',context)
+	ip = get_client_ip(request)
+	a=Ip_address(ip=ip)
+	a.save()
+	all_ips = Ip_address.objects.all()
+	links = Customer.objects.all().order_by('-id')
+	form = CreateCustomLinkForm()
+	context = {'links':links, 'form':form, 'all_ip':all_ips, 'ip':ip}
+	return render(request, 'dashboard/links.html',context)
 
 def scrape_title(url):
     res = requests.get(url)
@@ -81,3 +93,12 @@ def edit_links(request):
         link = Customer.objects.get(pk=id)
         link_data = {'id':link.id, 'url':link.url, 'short_url':link.short_url}
         return JsonResponse(link_data)
+
+def pages(request,pk):
+	"""creates each page from links"""
+	link_ip = get_client_ip(request)
+	page = Customer.objects.get(short_url=pk)
+	b = Link_only_ip_address(ip=link_ip, url=page)
+	b.save()
+	
+	return JsonResponse({'page':page.url})

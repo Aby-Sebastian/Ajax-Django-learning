@@ -7,4 +7,5 @@ urlpatterns = [
 	path('save/',views.save_data, name="save"),
 	path('edit/',views.edit_links, name="edit"),
 	path('delete/',views.delete, name="delete"),
+	path('page/<str:pk>',views.pages, name="pages"),
 ]
