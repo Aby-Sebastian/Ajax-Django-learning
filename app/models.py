@@ -9,23 +9,28 @@ class Customer(models.Model):
 	def __str__(self):
 		return self.short_url
 		
-		
+
 		
 class Ip_address(models.Model):
-        date = models.DateField(auto_now_add=True)
-        ip = models.CharField(max_length=50)
+    date = models.DateField(auto_now_add=True)
+    ip = models.CharField(max_length=50)
 
-        def __str__(self):
-                return f"{self.ip} on {self.date}"
+    def __str__(self):
+            return f"{self.ip} on {self.date}"
+
+    class Meta:
+    	ordering = ['-date']
                 
 
 class Link_only_ip_address(models.Model):
 	url = models.ForeignKey(Customer, on_delete=models.CASCADE)
 	date = models.DateField(auto_now_add=True)
 	ip = models.CharField(max_length=50)
+	device = models.CharField(max_length=100, default='None')
+	country = models.CharField(max_length=50, default='None')
 
 	def __str__(self):
-		return f"{self.ip} on {self.date}"
+		return f"{self.ip} is in device {self.device} on {self.date}"
 	
 	class Meta:
-		ordering = ['date']
+		ordering = ['-date']
