@@ -8,7 +8,7 @@ from django.utils import timezone
 import uuid
 import requests
 from bs4 import BeautifulSoup
-
+import geoip2.database
 
 
 def get_client_ip(request):
@@ -94,11 +94,32 @@ def edit_links(request):
         link_data = {'id':link.id, 'url':link.url, 'short_url':link.short_url}
         return JsonResponse(link_data)
 
+def get_country_from_IP(ip_address):
+    reader = geoip2.database.Reader('./GeoLite2-Country/GeoLite2-Country.mmdb')
+    try:
+        response = reader.country(ip_address)
+        country_name = response.country.name
+
+    except geoip2.errors.AddressNotFoundError:
+        print("Its localhost you idiot")
+        country_name = 'India'
+
+    reader.close()
+    return country_name
+
+# def get_device(request):
+# 	device = request.META['User-Agent']
+# 	return device
+
 def pages(request,pk):
 	"""creates each page from links"""
+	device = request.headers.get('User-Agent')
+	print(device)
 	link_ip = get_client_ip(request)
+	country = get_country_from_IP(link_ip)
+	print(country)
 	page = Customer.objects.get(short_url=pk)
-	b = Link_only_ip_address(ip=link_ip, url=page)
+	b = Link_only_ip_address(ip=link_ip, url=page, country=country)
 	b.save()
 	
 	return JsonResponse({'page':page.url})
