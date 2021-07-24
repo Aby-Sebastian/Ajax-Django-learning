@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+<div class="page_data">
+	{{page}}
+	{{count}}
+	{{url}}
+</div>
+<div class="all">
+	{% for link in data %}
+		{{link.date}}
+		{{link}}
+	{% endfor %}
+</div>
+{% endblock %}
