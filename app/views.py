@@ -125,6 +125,7 @@ def pages(request,pk):
 	print(country)
 	page = Customer.objects.get(short_url=pk)
 	b = Link_only_ip_address(ip=link_ip, url=page, country=country, device=device.os_name())
+	b.increment_click()
 	b.save()
 
 	# fetching for Chart data
