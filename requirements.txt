@@ -5,6 +5,7 @@ attrs==21.2.0
 beautifulsoup4==4.9.3
 certifi==2020.12.5
 chardet==4.0.0
+device-detector==0.10
 Django==3.1.7
 geoip2==4.2.0
 idna==2.10
@@ -12,6 +13,8 @@ maxminddb==2.0.3
 multidict==5.1.0
 PyOpenGraph==0.2
 pytz==2021.1
+PyYAML==5.4.1
+regex==2021.7.6
 requests==2.25.1
 soupsieve==2.2.1
 sqlparse==0.4.1

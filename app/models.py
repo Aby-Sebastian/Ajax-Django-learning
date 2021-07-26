@@ -4,7 +4,7 @@ from django.db import models
 class Customer(models.Model):
 	url = models.CharField(max_length=150)
 	short_url = models.CharField(max_length=20, unique=True)
-	
+	count=models.IntegerField(default=0,blank=True, null=True)
 
 	def __str__(self):
 		return self.short_url
@@ -28,9 +28,17 @@ class Link_only_ip_address(models.Model):
 	ip = models.CharField(max_length=50)
 	device = models.CharField(max_length=100, default='None')
 	country = models.CharField(max_length=50, default='None')
+	click = models.PositiveIntegerField(null=True,blank=True,default=0)
 
 	def __str__(self):
 		return f"{self.ip} is in device {self.device} on {self.date}"
 	
+	def trial(self):
+		return self.url
+
+	def increment_click(self):
+		self.click+=1
+		return self.click
+
 	class Meta:
 		ordering = ['-date']
