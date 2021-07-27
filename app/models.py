@@ -8,7 +8,10 @@ class Customer(models.Model):
 
 	def __str__(self):
 		return self.short_url
-		
+	
+	def increment_count(self):
+		self.count+=1
+		return self.count
 
 		
 class Ip_address(models.Model):
@@ -24,7 +27,7 @@ class Ip_address(models.Model):
 
 class Link_only_ip_address(models.Model):
 	url = models.ForeignKey(Customer, on_delete=models.CASCADE)
-	date = models.DateField(auto_now_add=True)
+	date = models.DateTimeField(auto_now_add=True)
 	ip = models.CharField(max_length=50)
 	device = models.CharField(max_length=100, default='None')
 	country = models.CharField(max_length=50, default='None')
@@ -32,13 +35,6 @@ class Link_only_ip_address(models.Model):
 
 	def __str__(self):
 		return f"{self.ip} is in device {self.device} on {self.date}"
-	
-	def trial(self):
-		return self.url
-
-	def increment_click(self):
-		self.click+=1
-		return self.click
 
 	class Meta:
 		ordering = ['-date']

@@ -117,16 +117,18 @@ def get_country_from_IP(ip_address):
 def pages(request,pk):
 	"""creates each page from links"""
 	ua = request.headers.get('User-Agent')
-	print(ua)
+	# print(ua)
 	# Parse UA string and load data to dict of 'os', 'client', 'device' keys
 	device = DeviceDetector(ua).parse()
 	link_ip = get_client_ip(request)
 	country = get_country_from_IP(link_ip)
-	print(country)
+	# print(country)
 	page = Customer.objects.get(short_url=pk)
-	b = Link_only_ip_address(ip=link_ip, url=page, country=country, device=device.os_name())
-	b.increment_click()
-	b.save()
+	# print(page.count)
+	b = Link_only_ip_address(ip=link_ip, url=page, country=country, device=device.os_name(), click=page.count+1)
+	b.url.increment_count()		# Increments url click count by 1
+	b.url.save()				# saves b.url class
+	b.save()					# saves b
 
 	# fetching for Chart data
 	urls=Customer.objects.get(short_url=pk)
@@ -138,9 +140,9 @@ def pages(request,pk):
 		dat.append(i.url)
 		labels.append(i.date)
 	# all_urls = Link_only_ip_address.objects.filter(url=urls)
-	print(country)
-	print(dat)
-	print(labels)
+	# print(country)
+	# print(dat)
+	# print(labels)
 	context={
 		'page':page.url,
 		'count':all_urls.count(),
