@@ -11,8 +11,7 @@ from bs4 import BeautifulSoup
 import geoip2.database
 from device_detector import DeviceDetector
 
-# Variables
-shortened_web_address = 'localhost:8000/page/'
+
 
 def get_client_ip(request):
 	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -107,11 +106,11 @@ def save_data(request):
 
 			if lid == '':
 				print('yes')
-				custom_url = Customer(url=value,short_url=shortened_web_address+short_url, titles=title_data, qr_code=f"./QR_codes/{short_url}.png")
+				custom_url = Customer(url=value,short_url=short_url, titles=title_data, qr_code=f"./QR_codes/{short_url}.png")
 			else:
 				print('no')
 
-				custom_url = Customer(id=lid,url=value,short_url=shortened_web_address+short_url, titles=title_data, qr_code=f"./QR_codes/{short_url}.png")
+				custom_url = Customer(id=lid,url=value,short_url=short_url, titles=title_data, qr_code=f"./QR_codes/{short_url}.png")
 			custom_url.save()
 			cust = Customer.objects.values().order_by('-id')
 			# print(cust)
@@ -173,7 +172,7 @@ def pages(request,pk):
 	device = DeviceDetector(ua).parse()
 	link_ip = get_client_ip(request)
 	country = get_country_from_IP(link_ip)
-	print('pk is ',pk)
+	# print(country)
 	page = Customer.objects.get(short_url=pk)
 
 	

@@ -4,6 +4,8 @@ from io import BytesIO
 from django.core.files import File
 from PIL import Image, ImageDraw
 
+url_shortened = "localhost:8000/page/"
+
 # Create your models here.
 class Customer(models.Model):
 	# created = models.DateTimeField(auto_now=True)
@@ -23,7 +25,7 @@ class Customer(models.Model):
 		return self.total_clicks
 
 	def save(self, *args, **kwargs):
-		qrcode_img = qrcode.make(self.short_url)
+		qrcode_img = qrcode.make(url_shortened + self.short_url)
 		canvas = Image.new('RGB', (290,290), 'white')
 		draw = ImageDraw.Draw(canvas)
 		canvas.paste(qrcode_img)
