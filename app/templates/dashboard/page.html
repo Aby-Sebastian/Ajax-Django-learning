@@ -1,15 +1,121 @@
 {% extends 'base/base.html' %}
+{% block script %}
+<script>
+	// console.log([{% for item in data %}'{{item.date}}',{% endfor %}]);
+	// console.log('hi');
+	$(document).ready(function(){
+		var ctx = document.getElementById('myChart').getContext('2d');
+		var myChart = new Chart(ctx, {
+		type: 'bar',
+		data: {
+		labels: [{% for item in dates %}'{{item}}',{% endfor %}],
+		datasets: [{
+		label: '# of Clicks',
+		data: [{% for item in names %}'{{item}}',{% endfor %}],
+		backgroundColor: [
+		'rgba(255, 99, 132, 0.2)',
+		'rgba(54, 162, 235, 0.2)',
+		'rgba(255, 206, 86, 0.2)',
+		'rgba(75, 192, 192, 0.2)',
+		'rgba(153, 102, 255, 0.2)',
+		'rgba(255, 159, 64, 0.2)'
+		],
+		borderColor: [
+		'rgba(255, 99, 132, 1)',
+		'rgba(54, 162, 235, 1)',
+		'rgba(255, 206, 86, 1)',
+		'rgba(75, 192, 192, 1)',
+		'rgba(153, 102, 255, 1)',
+		'rgba(255, 159, 64, 1)'
+		],
+		borderWidth: 1
+		}]
+		},
+		options: {
+		scales: {
+		y: {
+		beginAtZero: true
+		}
+		}
+		}
+		});
+
+	});
+</script>
+{% endblock script %}
 {% block content %}
+<!-- <style type="text/css">
+	.chart {
+		width: 50%;
+		height: auto;
+	}
+</style> -->
+
+<div class="chart container">
+<canvas id="myChart" width="400" height="200"></canvas>
+</div>
+
+
+<!-- Button trigger modal -->
+<button type="button" class="p-2 card-link btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal{{link.id}}">
+    QR Code
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade modal{{link.id}}" id="exampleModal{{link.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Link</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img src="../media/{{qr_code}}" alt="hii" width="100%" height="auto">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary btn-delete" data-sid="{{link.id}}" >Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
 <div class="page_data">
 	{{page}}
 	{{count}}
-	{{url}}
+	{{url}} <br>
+	{{title}}
 </div>
 <div class="all">
+	<h2>data</h2>
+	<img src="../media/{{qr_code}}" alt="hii" width=300 height=400>
+	<h4>total clicks : {{count}}</h4>
 	{% for link in data %}
-		{{link.date}}
-		{{link}}
+		link : {{link.date}}
+		aa: {{link.click}} <br>
+
 	{% endfor %}
 </div>
-{% endblock %}
+<div class="input-group mb-3">
+        <div style="margin: auto">
+          <!-- {{ svg|safe }} -->
+          svg here!!
+        </div>
+      </div>
+<div class="row container">
+	<div class="col">
+		hi <br>
+		{{names}} <br>
+		<button class="btn btn-primary">Hello</button>
+
+	</div>
+	<div class="col">
+		hello <br>
+		{{dates}}
+<canvas id="myChart2" width="400" height="200"></canvas>
+
+	</div>
+</div>
+{% endblock content %}
